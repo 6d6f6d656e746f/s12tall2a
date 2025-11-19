@@ -1,0 +1,43 @@
+org: valentinoc
+service: api-web-scraping-2
+
+provider:
+  name: aws
+  runtime: python3.12
+  # Default memory size for functions (increase to speed cold starts and Playwright)
+  memorySize: 2048
+  # Lambda timeout (can be higher than API Gateway integration limit)
+  timeout: 120
+  ecr:
+    images:
+      scrape_image:
+        path: .
+  iam:
+    role: arn:aws:iam::175670145706:role/LabRole
+
+functions:
+  scrape_table:
+    # Desplegar esta función como imagen en ECR (Serverless construirá la imagen definida por Dockerfile)
+    image: scrape_image
+    environment:
+      DDB_TABLE: TablaWebScrapping2
+    events:
+      - http:
+          path: /scrape/table
+          method: get
+          cors: true
+          integration: lambda
+
+resources:
+  Resources:
+    TablaWebScrapping:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: TablaWebScrapping2
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST
