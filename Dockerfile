@@ -26,5 +26,5 @@ ENV FONTCONFIG_PATH=/tmp/.fontconfig
 
 # Start the AWS Lambda Runtime Interface Client and point to the handler
 ENTRYPOINT ["/usr/bin/python3", "-m", "awslambdaric"]
-# Point to the handler inside the wsAWS package so the image uses the new implementation
-CMD ["wsAWS.scrap_table.lambda_handler"]
+CMD ["scrap_table.lambda_handler"]
+
